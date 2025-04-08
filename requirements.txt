@@ -1,3 +1,3 @@
-aiogram==3.19.1
+git+https://github.com/aiogram/aiogram@v3.1.9
 aiohttp
 sqlite3-builtin
