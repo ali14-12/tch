@@ -10,6 +10,7 @@ from aiogram.types import FSInputFile
 from bs4 import BeautifulSoup
 import feedparser
 
+# تنظیمات محیطی: اگر ترجیح می‌دهی از متغیرهای محیطی استفاده کنی، اینا رو از سیستم بخون
 API_TOKEN = '8052447897:AAE2cTsJucX2CIKrjW8UxsxQiyFFvaeGS2M'
 CHANNEL_ID = -1002648195972
 DB_NAME = "news2.db"
@@ -61,6 +62,25 @@ def download_image(img_url):
         logging.warning(f"Error downloading image: {e}")
     return None
 
+async def send_news_item(text, img_url):
+    if img_url:
+        img_data = download_image(img_url)
+        if img_data:
+            temp_filename = "temp_image.jpg"
+            with open(temp_filename, "wb") as f:
+                f.write(img_data)
+            try:
+                await bot.send_photo(CHANNEL_ID, FSInputFile(temp_filename), caption=text)
+            except Exception as e:
+                logging.error(f"Error sending photo: {e}")
+            finally:
+                if os.path.exists(temp_filename):
+                    os.remove(temp_filename)
+        else:
+            await bot.send_message(CHANNEL_ID, text)
+    else:
+        await bot.send_message(CHANNEL_ID, text)
+
 def fetch_news():
     url = 'https://techcrunch.com/feed/'
     feed_data = feedparser.parse(url)
@@ -74,7 +94,6 @@ def fetch_news():
             continue
 
         try:
-            # گرفتن محتوای لینک خبر برای استخراج خلاصه و عکس
             response = requests.get(link, headers=HEADERS, timeout=10)
             soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -105,20 +124,7 @@ async def news_loop():
             if not news_items:
                 logging.info("خبری برای ارسال وجود ندارد.")
             for text, img in news_items:
-                if img:
-                    img_data = download_image(img)
-                    if img_data:
-                        temp_file = "temp_image.jpg"
-                        with open(temp_file, "wb") as f:
-                            f.write(img_data)
-                        photo = FSInputFile(temp_file)
-                        await bot.send_photo(CHANNEL_ID, photo=photo, caption=text)
-                        os.remove(temp_file)
-                    else:
-                        # اگر دانلود عکس نشد، فقط پیام ارسال کن
-                        await bot.send_message(CHANNEL_ID, text)
-                else:
-                    await bot.send_message(CHANNEL_ID, text)
+                await send_news_item(text, img)
             await asyncio.sleep(900)  # هر 15 دقیقه
         except Exception as e:
             logging.error(f"خطا در دریافت خبر: {e}")
