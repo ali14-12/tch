@@ -9,7 +9,7 @@ from aiogram.enums import ParseMode
 from bs4 import BeautifulSoup
 import feedparser
 
-API_TOKEN = '8052447897:AAEEHwLSy7OIvZnPDnsGXTjGwiPtoRzrdHo'
+API_TOKEN = '8052447897:AAGtXzY9DOrRxj_zYGWRZFC45Y5aBZ7CcBo'
 CHANNEL_ID = -1002648195972
 DB_NAME = "news2.db"
 HEADERS = {"User-Agent": "Mozilla/5.0"}
