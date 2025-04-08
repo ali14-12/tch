@@ -1,0 +1,1 @@
+worker: python cod7.py
