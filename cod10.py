@@ -10,8 +10,8 @@ from aiogram.types import FSInputFile
 from bs4 import BeautifulSoup
 import feedparser
 
-API_TOKEN = os.getenv("API_TOKEN")
-CHANNEL_ID = os.getenv("CHANNEL_ID")
+API_TOKEN = '8052447897:AAE2cTsJucX2CIKrjW8UxsxQiyFFvaeGS2M'
+CHANNEL_ID = -1002648195972
 DB_NAME = "news2.db"
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 
